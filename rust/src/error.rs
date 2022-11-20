@@ -3,7 +3,7 @@ use crate::chain_crypto;
 use cbor_event::{self};
 
 // This file was code-generated using an experimental CDDL to rust tool:
-// https://github.com/Emurgo/cddl-codegen
+// https://github.com/MitchyCola/cddl-codegen
 
 #[derive(Debug)]
 pub enum Key {

@@ -12,15 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Emurgo/cardano-serialization-lib.git"
+    "url": "git+https://github.com/MitchyCola/cardano-serialization-lib.git"
   },
-  "author": "EMURGO",
+  "author": "MitchyCola",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Emurgo/cardano-serialization-lib/issues"
+    "url": "https://github.com/MitchyCola/cardano-serialization-lib/issues"
   },
   "type": "module",
-  "homepage": "https://github.com/Emurgo/cardano-serialization-lib#readme",
+  "homepage": "https://github.com/MitchyCola/cardano-serialization-lib#readme",
   "dependencies": {},
   "devDependencies": {
     "@types/chai": "4.2.11",

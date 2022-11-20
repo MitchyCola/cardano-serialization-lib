@@ -28,7 +28,7 @@ Benefits of using this library
 
 Serialization/deserialization code is automatically generated from
 Cardano’s official specification, which guarantees it can easily stay up
-to date! We do this using an EMURGO-written tool called `cddl-codegen`_
+to date! We do this using an MitchyCola-written tool called `cddl-codegen`_
 which can be re-used for other tasks such as automatically generate a
 Rust library for Cardano metadata specifications!
 
@@ -118,16 +118,16 @@ To publish new versions to NPM (only needed if you are an admin of this project)
    npm run js:publish-browser
    npm run js:publish-asm
 
-.. _NodeJS WASM package: https://www.npmjs.com/package/@emurgo/cardano-serialization-lib-nodejs
-.. _Browser (chrome/firefox) WASM package: https://www.npmjs.com/package/@emurgo/cardano-serialization-lib-browser
-.. _Browser (pure JS - no WASM) ASM.js package: https://www.npmjs.com/package/@emurgo/cardano-serialization-lib-asmjs
-.. _React-Native mobile bindings: https://github.com/Emurgo/react-native-haskell-shelley
-.. _cddl-codegen: https://github.com/Emurgo/cddl-codegen
+.. _NodeJS WASM package: https://www.npmjs.com/package/@mitchycola/cardano-serialization-lib-nodejs
+.. _Browser (chrome/firefox) WASM package: https://www.npmjs.com/package/@mitchycola/cardano-serialization-lib-browser
+.. _Browser (pure JS - no WASM) ASM.js package: https://www.npmjs.com/package/@mitchycola/cardano-serialization-lib-asmjs
+.. _React-Native mobile bindings: https://github.com/MitchyCola/react-native-haskell-shelley
+.. _cddl-codegen: https://github.com/MitchyCola/cddl-codegen
 .. _Typescript: https://www.typescriptlang.org/
 .. _Flow: https://flow.org/
 .. _here: /rust/pkg/cardano_serialization_lib.js.flow
 .. _example: /example
 .. _Byron WASM bindings: https://github.com/input-output-hk/js-cardano-wasm/tree/master/cardano-wallet
-.. _Jormungandr WASM bindings: https://github.com/emurgo/js-chain-libs
+.. _Jormungandr WASM bindings: https://github.com/mitchycola/js-chain-libs
 .. _CDDL: http://cbor.io/tools.html
 .. _link: https://github.com/input-output-hk/cardano-ledger-specs/tree/master/byron/cddl-spec

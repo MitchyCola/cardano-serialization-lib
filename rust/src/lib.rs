@@ -25,7 +25,7 @@ use noop_proc_macro::wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 // This file was code-generated using an experimental CDDL to rust tool:
-// https://github.com/Emurgo/cddl-codegen
+// https://github.com/MitchyCola/cddl-codegen
 
 use cbor_event::Special as CBORSpecial;
 use cbor_event::Type as CBORType;

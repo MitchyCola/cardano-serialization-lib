@@ -4,9 +4,9 @@ This is a library, written in Rust, for serialization & deserialization of data 
 
 ##### NPM packages
 
-- [NodeJS WASM package](https://www.npmjs.com/package/@emurgo/cardano-serialization-lib-nodejs)
-- [Browser (chrome/firefox) WASM package](https://www.npmjs.com/package/@emurgo/cardano-serialization-lib-browser)
-- [Browser (pure JS - no WASM) ASM.js package](https://www.npmjs.com/package/@emurgo/cardano-serialization-lib-asmjs)
+- [NodeJS WASM package](https://www.npmjs.com/package/@mitchycola/cardano-serialization-lib-nodejs)
+- [Browser (chrome/firefox) WASM package](https://www.npmjs.com/package/@mitchycola/cardano-serialization-lib-browser)
+- [Browser (pure JS - no WASM) ASM.js package](https://www.npmjs.com/package/@mitchycola/cardano-serialization-lib-asmjs)
 
 ##### Rust crates
 
@@ -14,7 +14,7 @@ This is a library, written in Rust, for serialization & deserialization of data 
 
 ##### Mobile bindings
 
-- [React-Native mobile bindings](https://github.com/Emurgo/react-native-haskell-shelley)
+- [React-Native mobile bindings](https://github.com/MitchyCola/react-native-haskell-shelley)
 
 ## Documentation
 

@@ -310,7 +310,7 @@ cargo build
 cargo run
 ```
 
-Once we have the CDDL file and it has passed metadata format validation we can use the [cddl-codegen](https://github.com/Emurgo/cddl-codegen) tool that we used to initially generate the serialization/deserialization/structural code for the core Shelley structures from the [shelley cddl spec](https://github.com/input-output-hk/cardano-ledger-specs/blob/master/shelley/chain-and-ledger/shelley-spec-ledger-test/cddl-files/shelley.cddl).
+Once we have the CDDL file and it has passed metadata format validation we can use the [cddl-codegen](https://github.com/MitchyCola/cddl-codegen) tool that we used to initially generate the serialization/deserialization/structural code for the core Shelley structures from the [shelley cddl spec](https://github.com/input-output-hk/cardano-ledger-specs/blob/master/shelley/chain-and-ledger/shelley-spec-ledger-test/cddl-files/shelley.cddl).
 
 Assuming we are in the `cddl-codegen` root directory and have created a `input.cddl` file in that directory containing the CDDL we wish to generate we can build and code-generate with
 ```

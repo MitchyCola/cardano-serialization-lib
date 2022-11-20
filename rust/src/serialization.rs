@@ -6,7 +6,7 @@ use error::*;
 use std::io::{Seek, SeekFrom};
 
 // This file was code-generated using an experimental CDDL to rust tool:
-// https://github.com/Emurgo/cddl-codegen
+// https://github.com/MitchyCola/cddl-codegen
 
 impl cbor_event::se::Serialize for UnitInterval {
     fn serialize<'se, W: Write>(

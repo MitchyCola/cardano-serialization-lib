@@ -27,7 +27,7 @@ pub(crate) fn blake2b256(data: &[u8]) -> [u8; 32] {
 }
 
 // All key structs were taken from js-chain-libs:
-// https://github.com/Emurgo/js-chain-libs
+// https://github.com/MitchyCola/js-chain-libs
 
 #[wasm_bindgen]
 pub struct Bip32PrivateKey(crypto::SecretKey<crypto::Ed25519Bip32>);
