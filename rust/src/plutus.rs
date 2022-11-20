@@ -581,7 +581,7 @@ impl PlutusMap {
     pub fn keys(&self) -> PlutusList {
         PlutusList {
             elems: self.0.iter().map(|(k, _v)| k.clone()).collect::<Vec<_>>(),
-            definite_encoding: None,
+            definite_encoding: Some(true),
         }
     }
 }
@@ -782,7 +782,7 @@ impl PlutusList {
     pub fn new() -> Self {
         Self {
             elems: Vec::new(),
-            definite_encoding: None,
+            definite_encoding: Some(true),
         }
     }
 
@@ -796,7 +796,7 @@ impl PlutusList {
 
     pub fn add(&mut self, elem: &PlutusData) {
         self.elems.push(elem.clone());
-        self.definite_encoding = None;
+        self.definite_encoding = Some(true);
     }
 }
 
@@ -804,7 +804,7 @@ impl From<Vec<PlutusData>> for PlutusList {
     fn from(elems: Vec<PlutusData>) -> Self {
         Self {
             elems,
-            definite_encoding: None,
+            definite_encoding: Some(true),
         }
     }
 }
