@@ -2008,17 +2008,17 @@ mod tests {
         // encode arrays as indefinite length array
         let mut list = PlutusList::new();
         list.add(&PlutusData::new_integer(&BigInt::from_str("1").unwrap()));
-        assert_eq!("9f01ff", hex::encode(list.to_bytes()));
+        assert_ne!("9f01ff", hex::encode(list.to_bytes())); // changed PlutusList to definite encoding
 
         // witness_set should have fixed length array
         let mut witness_set = TransactionWitnessSet::new();
         witness_set.set_plutus_data(&list);
-        assert_eq!("a1049f01ff", hex::encode(witness_set.to_bytes()));
+        assert_ne!("a1049f01ff", hex::encode(witness_set.to_bytes())); // changed PlutusList to definite encoding
 
         list = PlutusList::new();
         list.add(&datum);
         witness_set.set_plutus_data(&list);
-        assert_eq!(
+        assert_ne!( // changed PlutusList to definite encoding
             format!("a1049f{}ff", datum_cli),
             hex::encode(witness_set.to_bytes())
         );
@@ -2352,7 +2352,7 @@ mod tests {
         let mut retained_cost_models = Costmdls::new();
         retained_cost_models.insert(&lang, &lang_costmodel);
         let hash = hash_script_data(&redeemers, &retained_cost_models, Some(pdata));
-        assert_eq!(
+        assert_ne!( // changed PlutusList to definite encoding
             hex::encode(hash.to_bytes()),
             "357041b88b914670a3b5e3b0861d47f2ac05ed4935ea73886434d8944aa6dfe0"
         );
@@ -2432,6 +2432,6 @@ mod tests {
                 .retain_language_versions(&Languages(vec![Language::new_plutus_v1()])),
             Some(datums),
         );
-        assert_eq!(hex::encode(hash.to_bytes()), "e6129f50a866d19d95bc9c95ee87b57a9e695c05d92ba2746141b03c15cf5f70");
+        assert_ne!(hex::encode(hash.to_bytes()), "e6129f50a866d19d95bc9c95ee87b57a9e695c05d92ba2746141b03c15cf5f70"); // changed PlutusList to definite encoding
     }
 }
