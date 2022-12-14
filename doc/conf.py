@@ -22,8 +22,8 @@ if rtd_version not in ["stable", "latest"]:
 # -- Project information -----------------------------------------------------
 
 project = 'cardano-serialization-lib Documentation'
-copyright = '2020, EMURGO'
-author = 'EMURGO'
+copyright = '2020, MitchyCola'
+author = 'MitchyCola'
 
 # The full version, including alpha/beta/rc tags
 release = '1.0.0'

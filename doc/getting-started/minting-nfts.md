@@ -6,7 +6,7 @@ This example mints nfts directly to an account on testnet.
 code taken from (here)[https://github.com/ozgrakkurt/cardano-mint-nft]
 
 ```javascript
-import CardanoWasm from "@emurgo/cardano-serialization-lib-nodejs";
+import CardanoWasm from "@mitchycola/cardano-serialization-lib-nodejs";
 import axios from "axios";
 import cbor from "cbor";
 
