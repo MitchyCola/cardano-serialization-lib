@@ -208,7 +208,7 @@ impl PlutusScripts {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd,)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd,)]
 pub struct ConstrPlutusData {
     alternative: BigNum,
     data: PlutusList,
@@ -555,7 +555,7 @@ impl Languages {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd,)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd,)]
 pub struct PlutusMap(std::collections::BTreeMap<PlutusData, PlutusData>);
 
 to_from_bytes!(PlutusMap);
@@ -587,6 +587,43 @@ impl PlutusMap {
 }
 
 #[wasm_bindgen]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct PlutusDatumMap(std::collections::HashMap<PlutusData, PlutusData, std::collections::hash_map::RandomState>);
+
+to_from_bytes!(PlutusDatumMap);
+
+#[wasm_bindgen]
+impl PlutusDatumMap {
+    pub fn new() -> Self {
+        Self(std::collections::HashMap::new())
+    }
+
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn insert(&mut self, key: &PlutusData, value: &PlutusData) -> Option<PlutusData> {
+        self.0.insert(key.clone(), value.clone())
+    }
+
+    pub fn get(&self, key: &PlutusData) -> Option<PlutusData> {
+        self.0.get(key).map(|v| v.clone())
+    }
+    
+
+    // pub fn from(list: &[(PlutusData, PlutusData)]) -> Self {
+    //     Self(std::iter::FromIterator::from_iter(list.clone()))
+    // }
+
+    pub fn keys(&self) -> PlutusList {
+        PlutusList {
+            elems: self.0.iter().map(|(k, _v)| k.clone()).collect::<Vec<_>>(),
+            definite_encoding: None,
+        }
+    }
+}
+
+#[wasm_bindgen]
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub enum PlutusDataKind {
     ConstrPlutusData,
@@ -597,7 +634,7 @@ pub enum PlutusDataKind {
 }
 
 #[derive(
-    Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum PlutusDataEnum {
     ConstrPlutusData(ConstrPlutusData),
     Map(PlutusMap),
@@ -607,7 +644,7 @@ pub enum PlutusDataEnum {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Debug, Ord, PartialOrd)]
+#[derive(Clone, Debug, Hash, Ord, PartialOrd)]
 pub struct PlutusData {
     datum: PlutusDataEnum,
     // We should always preserve the original datums when deserialized as this is NOT canonicized
@@ -643,6 +680,14 @@ impl PlutusData {
         Self {
             datum: PlutusDataEnum::Map(map.clone()),
             original_bytes: None,
+        }
+    }
+
+    // The input is expected to be a datum that has already been CBOR encoded.
+    pub fn new_datum_map(cbor: Vec<u8>) -> Self {
+        Self {
+            datum: PlutusDataEnum::Map(PlutusMap::new()),
+            original_bytes: Some(cbor),
         }
     }
 
@@ -758,7 +803,7 @@ impl <'de> serde::de::Deserialize<'de> for PlutusData {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Debug, Ord, PartialOrd, serde::Serialize, serde::Deserialize, JsonSchema)]
+#[derive(Clone, Debug, Hash, Ord, PartialOrd, serde::Serialize, serde::Deserialize, JsonSchema)]
 pub struct PlutusList {
     elems: Vec<PlutusData>,
     // We should always preserve the original datums when deserialized as this is NOT canonicized
@@ -1622,6 +1667,20 @@ impl cbor_event::se::Serialize for PlutusMap {
     }
 }
 
+impl cbor_event::se::Serialize for PlutusDatumMap {
+    fn serialize<'se, W: Write>(
+        &self,
+        serializer: &'se mut Serializer<W>,
+    ) -> cbor_event::Result<&'se mut Serializer<W>> {
+        serializer.write_map(cbor_event::Len::Len(self.0.len() as u64))?;
+        for (key, value) in &self.0 {
+            key.serialize(serializer)?;
+            value.serialize(serializer)?;
+        }
+        Ok(serializer)
+    }
+}
+
 impl Deserialize for PlutusMap {
     fn deserialize<R: BufRead + Seek>(raw: &mut Deserializer<R>) -> Result<Self, DeserializeError> {
         let mut table = std::collections::BTreeMap::new();
@@ -1647,6 +1706,35 @@ impl Deserialize for PlutusMap {
             Ok(())
         })()
         .map_err(|e| e.annotate("PlutusMap"))?;
+        Ok(Self(table))
+    }
+}
+
+impl Deserialize for PlutusDatumMap {
+    fn deserialize<R: BufRead + Seek>(raw: &mut Deserializer<R>) -> Result<Self, DeserializeError> {
+        let mut table = std::collections::HashMap::new();
+        (|| -> Result<_, DeserializeError> {
+            let len = raw.map()?;
+            while match len {
+                cbor_event::Len::Len(n) => table.len() < n as usize,
+                cbor_event::Len::Indefinite => true,
+            } {
+                if raw.cbor_type()? == CBORType::Special {
+                    assert_eq!(raw.special()?, CBORSpecial::Break);
+                    break;
+                }
+                let key = PlutusData::deserialize(raw)?;
+                let value = PlutusData::deserialize(raw)?;
+                if table.insert(key.clone(), value).is_some() {
+                    return Err(DeserializeFailure::DuplicateKey(Key::Str(String::from(
+                        "some complicated/unsupported type",
+                    )))
+                    .into());
+                }
+            }
+            Ok(())
+        })()
+        .map_err(|e| e.annotate("PlutusDatumMap"))?;
         Ok(Self(table))
     }
 }
