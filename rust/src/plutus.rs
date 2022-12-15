@@ -12,6 +12,8 @@ use cbor_event::{
 
 use schemars::JsonSchema;
 
+use indexmap::IndexMap;
+
 #[wasm_bindgen]
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct PlutusScript {
@@ -588,14 +590,15 @@ impl PlutusMap {
 
 #[wasm_bindgen]
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct PlutusDatumMap(std::collections::HashMap<PlutusData, PlutusData, std::collections::hash_map::RandomState>);
+
+pub struct PlutusDatumMap(IndexMap<PlutusData, PlutusData>);
 
 to_from_bytes!(PlutusDatumMap);
 
 #[wasm_bindgen]
 impl PlutusDatumMap {
     pub fn new() -> Self {
-        Self(std::collections::HashMap::new())
+        Self(IndexMap::new())
     }
 
     pub fn len(&self) -> usize {
@@ -606,21 +609,30 @@ impl PlutusDatumMap {
         self.0.insert(key.clone(), value.clone())
     }
 
-    pub fn get(&self, key: &PlutusData) -> Option<PlutusData> {
-        self.0.get(key).map(|v| v.clone())
-    }
+    // pub fn get(&self, key: &PlutusData) -> Option<PlutusData> {
+    //     self.0.get(key).map(|v| v.clone())
+    // }
     
 
-    // pub fn from(list: &[(PlutusData, PlutusData)]) -> Self {
-    //     Self(std::iter::FromIterator::from_iter(list.clone()))
+    // pub fn from_list(list: &[(PlutusData, PlutusData)]) -> Self {
+    //     Self(
+    //         serde_json::from_value(serde_json::json!({
+    //             "PlutusDatumMap": list
+    //         })).unwrap()
+    //     )
     // }
 
-    pub fn keys(&self) -> PlutusList {
-        PlutusList {
-            elems: self.0.iter().map(|(k, _v)| k.clone()).collect::<Vec<_>>(),
-            definite_encoding: None,
-        }
-    }
+    // pub fn from_list(tuples: &[(PlutusData, PlutusData)]) -> Self {
+    //     let m: std::collections::HashMap<_, _> = std::collections::HashMap::from(tuples);
+    //     Self(m)
+    // }
+
+    // pub fn keys(&self) -> PlutusList {
+    //     PlutusList {
+    //         elems: self.0.iter().map(|(k, _v)| k.clone()).collect::<Vec<_>>(),
+    //         definite_encoding: None,
+    //     }
+    // }
 }
 
 #[wasm_bindgen]
@@ -1712,7 +1724,7 @@ impl Deserialize for PlutusMap {
 
 impl Deserialize for PlutusDatumMap {
     fn deserialize<R: BufRead + Seek>(raw: &mut Deserializer<R>) -> Result<Self, DeserializeError> {
-        let mut table = std::collections::HashMap::new();
+        let mut table = IndexMap::new();
         (|| -> Result<_, DeserializeError> {
             let len = raw.map()?;
             while match len {
