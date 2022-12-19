@@ -608,6 +608,17 @@ impl PlutusDatumMap {
     pub fn insert(&mut self, key: &PlutusData, value: &PlutusData) -> Option<PlutusData> {
         self.0.insert(key.clone(), value.clone())
     }
+
+    pub fn get(&self, key: &PlutusData) -> Option<PlutusData> {
+        self.0.get(key).map(|v| v.clone())
+    }
+
+    pub fn keys(&self) -> PlutusList {
+        PlutusList {
+            elems: self.0.iter().map(|(k, _v)| k.clone()).collect::<Vec<_>>(),
+            definite_encoding: None,
+        }
+    }
 }
 
 #[wasm_bindgen]

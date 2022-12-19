@@ -4737,6 +4737,17 @@ declare export class PlutusDatumMap {
    * @returns {PlutusData | void}
    */
   insert(key: PlutusData, value: PlutusData): PlutusData | void;
+
+  /**
+   * @param {PlutusData} key
+   * @returns {PlutusData | void}
+   */
+  get(key: PlutusData): PlutusData | void;
+
+  /**
+   * @returns {PlutusList}
+   */
+  keys(): PlutusList;
 }
 /**
  */
