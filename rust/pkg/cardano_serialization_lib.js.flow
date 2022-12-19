@@ -4677,6 +4677,11 @@ declare export class PlutusData {
   as_bytes(): Uint8Array | void;
 
   /**
+   * @returns {Uint8Array | void}
+   */
+  as_original_bytes(): Uint8Array | void;
+
+  /**
    * @param {number} schema
    * @returns {string}
    */
@@ -4732,17 +4737,6 @@ declare export class PlutusDatumMap {
    * @returns {PlutusData | void}
    */
   insert(key: PlutusData, value: PlutusData): PlutusData | void;
-
-  /**
-   * @param {PlutusData} key
-   * @returns {PlutusData | void}
-   */
-  get(key: PlutusData): PlutusData | void;
-
-  /**
-   * @returns {PlutusList}
-   */
-  keys(): PlutusList;
 }
 /**
  */

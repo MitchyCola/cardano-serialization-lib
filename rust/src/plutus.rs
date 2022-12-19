@@ -12,7 +12,7 @@ use cbor_event::{
 
 use schemars::JsonSchema;
 
-use indexmap::IndexMap;
+use indexmap::{indexmap, IndexMap};
 
 #[wasm_bindgen]
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
@@ -608,31 +608,6 @@ impl PlutusDatumMap {
     pub fn insert(&mut self, key: &PlutusData, value: &PlutusData) -> Option<PlutusData> {
         self.0.insert(key.clone(), value.clone())
     }
-
-    // pub fn get(&self, key: &PlutusData) -> Option<PlutusData> {
-    //     self.0.get(key).map(|v| v.clone())
-    // }
-    
-
-    // pub fn from_list(list: &[(PlutusData, PlutusData)]) -> Self {
-    //     Self(
-    //         serde_json::from_value(serde_json::json!({
-    //             "PlutusDatumMap": list
-    //         })).unwrap()
-    //     )
-    // }
-
-    // pub fn from_list(tuples: &[(PlutusData, PlutusData)]) -> Self {
-    //     let m: std::collections::HashMap<_, _> = std::collections::HashMap::from(tuples);
-    //     Self(m)
-    // }
-
-    // pub fn keys(&self) -> PlutusList {
-    //     PlutusList {
-    //         elems: self.0.iter().map(|(k, _v)| k.clone()).collect::<Vec<_>>(),
-    //         definite_encoding: None,
-    //     }
-    // }
 }
 
 #[wasm_bindgen]
@@ -767,6 +742,10 @@ impl PlutusData {
             PlutusDataEnum::Bytes(x) => Some(x.clone()),
             _ => None,
         }
+    }
+
+    pub fn as_original_bytes(self) -> Option<Vec<u8>> {
+        self.original_bytes
     }
 
     pub fn to_json(&self, schema: PlutusDatumSchema) -> Result<String, JsError> {
@@ -2095,6 +2074,39 @@ mod tests {
         // assert_eq!(constr_1854, constr_1854_roundtrip);
     }
 
+    #[test]
+    pub fn map_in_datum_remains_unsorted_serialization() {
+        fn x(input: i32) -> PlutusData {PlutusData::new_integer(&BigInt::from(input))}
+        fn y(input: &str) -> PlutusData {PlutusData::new_bytes(input.as_bytes().to_vec())}
+        let datum_cbor = "a4024162044164014161034163";
+
+        let datum = PlutusDatumMap(indexmap! {
+            x(2) => y("b"),
+            x(4) => y("d"),
+            x(1) => y("a"),
+            x(3) => y("c"),
+        });
+
+        assert_eq!(datum_cbor, hex::encode(datum.to_bytes()));
+    }
+
+    #[test]
+    pub fn map_in_datum_remains_unsorted_deserialization() {
+        let orig_bytes = Vec::from_hex("a4024162044164014161034163").unwrap();
+        let datum = PlutusDatumMap::from_bytes(orig_bytes.clone()).unwrap();
+        let new_bytes = datum.to_bytes();
+        assert_eq!(orig_bytes, new_bytes);
+    }
+
+    #[test]
+    pub fn map_in_datum_roundtrip_plutusdata() {
+        let orig_bytes = Vec::from_hex("a4024162044164014161034163").unwrap();
+        let pd = PlutusData::from_bytes(PlutusData::new_datum_map(orig_bytes.clone()).to_bytes()).unwrap();
+        let new_bytes = PlutusDatumMap::from_bytes(pd.original_bytes.unwrap()).unwrap().to_bytes();
+
+        assert_eq!(orig_bytes, new_bytes);
+    }
+    
     #[test]
     pub fn plutus_list_serialization_cli_compatibility() {
         // mimic cardano-cli array encoding, see https://github.com/Emurgo/cardano-serialization-lib/issues/227
