@@ -755,8 +755,12 @@ impl PlutusData {
         }
     }
 
-    pub fn as_original_bytes(self) -> Option<Vec<u8>> {
-        self.original_bytes
+    // Use a reference so that this function does not remove the data from memory.
+    pub fn as_original_bytes(&self) -> Option<Vec<u8>> {
+        match &self.original_bytes {
+            Some(x) => Some(x.clone()),
+            _ => None,
+        }
     }
 
     pub fn to_json(&self, schema: PlutusDatumSchema) -> Result<String, JsError> {
